@@ -8,10 +8,12 @@ namespace OrtSurvey.Models
 	{
 		[Key]
 		private int id { get; set; }
-		private string texto { get; set; }
+		[Required(ErrorMessage = "El campo {0} es obligatorio.")]
+		[StringLength(300, MinimumLength = 5, ErrorMessage = "La pregunta debe tener entre {2} y {1} caracteres.")]
+        private string texto { get; set; }
 		[ForeignKey("Encuesta")]
         private int idEncuesta { get; set; }
-		private List<Opcion> opciones { get; set; }
-		private List<Respuesta> respuestas { get; set; }
-	}
+		private List<Opcion> opciones { get; set; } = new List<Opcion>();
+        private List<Respuesta> respuestas { get; set; } = new List<Respuesta>();
+    }
 }

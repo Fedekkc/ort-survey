@@ -6,7 +6,9 @@ namespace OrtSurvey.Models
 	public class Respuesta
 	{
 		[Key]
-		private int id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
+        private int id { get; set; }
 		[ForeignKey("Opcion")]
         private int idRespEncuesta { get; set; }
 		[ForeignKey("Pregunta")]

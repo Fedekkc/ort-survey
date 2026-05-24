@@ -7,6 +7,8 @@ namespace OrtSurvey.Models
     public class Encuesta
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         private int id { get; set; }
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [StringLength(120, MinimumLength = 5, ErrorMessage = "El campo {0} debe tener entre {2} y {1} caracteres.")]

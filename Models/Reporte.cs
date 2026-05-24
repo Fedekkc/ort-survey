@@ -7,6 +7,8 @@ namespace OrtSurvey.Models
 
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         private int id { get; set; }
         [ForeignKey("Encuesta")]
         private int idEncuesta { get; set; }

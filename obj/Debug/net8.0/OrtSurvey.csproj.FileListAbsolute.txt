@@ -33,3 +33,4 @@ C:\Users\User\source\repos\ort-survey\obj\Debug\net8.0\refint\OrtSurvey.dll
 C:\Users\User\source\repos\ort-survey\obj\Debug\net8.0\OrtSurvey.pdb
 C:\Users\User\source\repos\ort-survey\obj\Debug\net8.0\OrtSurvey.genruntimeconfig.cache
 C:\Users\User\source\repos\ort-survey\obj\Debug\net8.0\ref\OrtSurvey.dll
+C:\Users\User\source\repos\ort-survey\obj\Debug\net8.0\OrtSurvey.csproj.AssemblyReference.cache

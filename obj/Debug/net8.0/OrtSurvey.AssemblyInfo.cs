@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OrtSurvey")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+af7d667011fe8adc0c9f93bc46251cda16d37c15")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f14f111945225d3a6aabf9b0434d1308f09b0281")]
 [assembly: System.Reflection.AssemblyProductAttribute("OrtSurvey")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OrtSurvey")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

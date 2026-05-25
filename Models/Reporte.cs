@@ -4,19 +4,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace OrtSurvey.Models
 {
     public class Reporte
-
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int id_reporte { get; set; }
 
-        private int id { get; set; }
+        public string tipo_reporte { get; set; }
+        public DateTime fecha_generacion { get; set; }
+        public string correo_destino { get; set; }
+
         [ForeignKey("Encuesta")]
-        private int idEncuesta { get; set; }
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        [EnumDataType(typeof(FormatoReporte), ErrorMessage = "El campo {0} debe ser un valor válido.")]
-        private FormatoReporte formato { get; set; }
-        private DateTime creadoEn { get; set; } = DateTime.Now;
-
-
+        public int id_encuesta { get; set; }
+        public Encuesta Encuesta { get; set; }
     }
 }

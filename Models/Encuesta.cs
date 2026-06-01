@@ -8,19 +8,26 @@ namespace OrtSurvey.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int id_encuesta { get; set; }
 
-        private int id { get; set; }
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [StringLength(120, MinimumLength = 5, ErrorMessage = "El campo {0} debe tener entre {2} y {1} caracteres.")]
-        private string titulo { get; set; }
+        public string titulo { get; set; }
+
         [StringLength(500, ErrorMessage = "El campo {0} no puede exceder los {1} caracteres.")]
-        private string descripcion { get; set; }
-        private bool esPublica { get; set; } = true;
-        [Range(1, int.MaxValue, ErrorMessage = "El campo {0} debe ser mayor que 0.")]
-        private int limiteRespuestas { get; set; } = 1;
-        private DateTime fechaCierre { get; set; }
+        public string descripcion { get; set; }
+
+        public bool es_publica { get; set; } = true;
+
+        public DateTime fecha_creacion { get; set; }
+        public DateTime? fecha_cierre { get; set; }
+
+        public string estado { get; set; }
+
         [ForeignKey("Usuario")]
-        private int idUsuario { get; set; }
-        private string codigoQR { get; set; }
+        public int id_usuario { get; set; }
+        public Usuario Usuario { get; set; }
+
+        public List<Pregunta> Preguntas { get; set; } = new List<Pregunta>();
     }
 }

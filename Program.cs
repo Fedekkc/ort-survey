@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using OrtSurvey.Context;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,6 +12,10 @@ builder.Services.AddAuthentication("Cookies")
         options.AccessDeniedPath = "/auth/login";
     });
 builder.Services.AddAuthorization();
+
+builder.Services.AddDbContext<OrtSurveyDataBase>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 
 var app = builder.Build();
 

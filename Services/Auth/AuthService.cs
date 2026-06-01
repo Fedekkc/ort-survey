@@ -4,7 +4,7 @@ using OrtSurvey.Context;
 using OrtSurvey.Dtos;
 using OrtSurvey.Models;
 
-namespace OrtSurvey.Services;
+namespace OrtSurvey.Services.Auth;
 
 public class AuthService : IAuthService
 {

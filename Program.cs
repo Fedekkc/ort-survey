@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OrtSurvey.Context;
 using OrtSurvey.Models;
-using OrtSurvey.Services;
+using OrtSurvey.Services.Auth;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

@@ -1,6 +1,6 @@
 using OrtSurvey.Dtos;
 
-namespace OrtSurvey.Services;
+namespace OrtSurvey.Services.Auth;
 
 public interface IAuthService
 {

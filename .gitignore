@@ -1,4 +1,27 @@
-.vs
-wwwroot
-obj/
+# Build outputs
 bin/
+obj/
+**/bin/
+**/obj/
+
+# IDE
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Frontend deps
+node_modules/
+
+wwwroot
+

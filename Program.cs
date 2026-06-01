@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OrtSurvey.Context;
+using OrtSurvey.Models;
+using OrtSurvey.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,6 +15,9 @@ builder.Services.AddAuthentication("Cookies")
         options.AccessDeniedPath = "/auth/login";
     });
 builder.Services.AddAuthorization();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
 
 builder.Services.AddDbContext<OrtSurveyDataBase>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))

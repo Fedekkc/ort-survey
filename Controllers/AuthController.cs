@@ -2,8 +2,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OrtSurvey.Dtos;
+using OrtSurvey.Services;
 using System.Security.Claims;
-using System.Text.Json;
 
 namespace OrtSurvey.Controllers;
 
@@ -11,26 +12,47 @@ namespace OrtSurvey.Controllers;
 [Route("auth")]
 public class AuthController : ControllerBase
 {
-    [HttpPost("register")]
-    public IActionResult Register([FromBody] JsonElement request)
+    private readonly IAuthService _authService;
+
+    public AuthController(IAuthService authService)
     {
-        return CreatedAtAction(nameof(GetCurrentUser), new { id = "temp-user" }, new
+        _authService = authService;
+    }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] AuthRegisterRequest request, CancellationToken cancellationToken)
+    {
+        var result = await _authService.RegisterAsync(request, cancellationToken);
+        if (!result.Succeeded)
         {
-            id = "temp-user",
-            email = request.TryGetProperty("email", out var email) ? email.GetString() : null,
-            nombre = request.TryGetProperty("nombre", out var nombre) ? nombre.GetString() : null
-        });
+            if (result.ErrorCode == AuthErrorCode.EmailInUse)
+            {
+                return Conflict(new { message = result.ErrorMessage });
+            }
+
+            return BadRequest(new { message = result.ErrorMessage });
+        }
+
+        return CreatedAtAction(nameof(GetCurrentUser), result.User);
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] JsonElement request)
+    public async Task<IActionResult> Login([FromBody] AuthLoginRequest request, CancellationToken cancellationToken)
     {
-        var email = request.TryGetProperty("email", out var emailValue) ? emailValue.GetString() : string.Empty;
+        var result = await _authService.LoginAsync(request, cancellationToken);
+        if (!result.Succeeded || result.User == null)
+        {
+            return Unauthorized(new { message = result.ErrorMessage });
+        }
+
+        var user = result.User;
+        var displayName = string.IsNullOrWhiteSpace(user.Nombre) ? user.Email : user.Nombre;
+
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, "temp-user"),
-            new(ClaimTypes.Email, email ?? string.Empty),
-            new(ClaimTypes.Name, email ?? string.Empty)
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.Name, displayName)
         };
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -38,12 +60,7 @@ public class AuthController : ControllerBase
 
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-        return Ok(new
-        {
-            id = "temp-user",
-            email,
-            nombre = (string?)null
-        });
+        return Ok(user);
     }
 
     [Authorize]
@@ -56,16 +73,20 @@ public class AuthController : ControllerBase
 
     [Authorize]
     [HttpGet("me")]
-    public IActionResult GetCurrentUser()
+    public async Task<IActionResult> GetCurrentUser(CancellationToken cancellationToken)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
-        var email = User.FindFirstValue(ClaimTypes.Email) ?? User.Identity?.Name ?? string.Empty;
-
-        return Ok(new
+        var userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdValue, out var userId))
         {
-            id = userId,
-            email,
-            nombre = (string?)null
-        });
+            return Unauthorized();
+        }
+
+        var user = await _authService.GetUserAsync(userId, cancellationToken);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(user);
     }
 }

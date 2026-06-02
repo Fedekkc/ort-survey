@@ -2,8 +2,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OrtSurvey.Dtos;
+using OrtSurvey.Dtos.Auth;
 using OrtSurvey.Services;
+using OrtSurvey.Services.Auth;
 using System.Security.Claims;
 
 namespace OrtSurvey.Controllers;

@@ -1,4 +1,4 @@
-using OrtSurvey.Dtos;
+using OrtSurvey.Dtos.Auth;
 
 namespace OrtSurvey.Services;
 

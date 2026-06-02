@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OrtSurvey.Context;
-using OrtSurvey.Dtos;
+using OrtSurvey.Dtos.Auth;
 using OrtSurvey.Models;
 
 namespace OrtSurvey.Services.Auth;

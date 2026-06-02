@@ -1,4 +1,4 @@
-namespace OrtSurvey.Dtos;
+namespace OrtSurvey.Dtos.Auth;
 
 public class AuthUserDto
 {

@@ -23,6 +23,9 @@ builder.Services.AddDbContext<OrtSurveyDataBase>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+// servicio de preguntas
+builder.Services.AddScoped<OrtSurvey.Services.Pregunta.IPreguntaService, OrtSurvey.Services.Pregunta.PreguntaService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

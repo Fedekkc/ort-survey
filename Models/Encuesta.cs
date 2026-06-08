@@ -24,7 +24,6 @@ namespace OrtSurvey.Models
 
         public string estado { get; set; }
 
-        [ForeignKey("Usuario")]
         public int id_usuario { get; set; }
         public Usuario Usuario { get; set; }
 

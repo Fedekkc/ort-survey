@@ -13,7 +13,6 @@ namespace OrtSurvey.Models
         public DateTime fecha_generacion { get; set; }
         public string correo_destino { get; set; }
 
-        [ForeignKey("Encuesta")]
         public int id_encuesta { get; set; }
         public Encuesta Encuesta { get; set; }
     }

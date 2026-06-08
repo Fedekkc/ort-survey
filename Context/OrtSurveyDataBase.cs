@@ -15,7 +15,6 @@ namespace OrtSurvey.Context
         public DbSet<Encuesta> Encuestas { get; set; }
         public DbSet<Pregunta> Preguntas { get; set; }
         public DbSet<Opcion> Opciones { get; set; }
-        public DbSet<RespuestaEncuesta> RespuestasEncuestas { get; set; }
         public DbSet<Respuesta> Respuestas { get; set; }
         public DbSet<Reporte> Reportes { get; set; }
 
@@ -48,8 +47,6 @@ namespace OrtSurvey.Context
             modelBuilder.Entity<Pregunta>(entity => {
                 entity.HasKey(e => e.id_pregunta);
                 entity.Property(e => e.texto).HasColumnType("varchar(300)").IsRequired();
-                entity.Property(e => e.tipo_pregunta).HasColumnType("varchar(30)");
-                entity.Property(e => e.es_obligatoria).HasColumnType("bit").HasDefaultValue(false);
                 entity.HasOne(e => e.Encuesta).WithMany().HasForeignKey(e => e.id_encuesta).OnDelete(DeleteBehavior.Cascade);
             });
 
@@ -59,18 +56,13 @@ namespace OrtSurvey.Context
                 entity.HasOne(e => e.Pregunta).WithMany().HasForeignKey(e => e.id_pregunta).OnDelete(DeleteBehavior.Cascade);
             });
 
-            modelBuilder.Entity<RespuestaEncuesta>(entity => {
-                entity.HasKey(e => e.id_respuesta_encuesta);
-                entity.Property(e => e.ip_respondedor).HasColumnType("varchar(45)");
-                entity.Property(e => e.fecha_respuesta).HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
-                entity.HasOne(e => e.Encuesta).WithMany().HasForeignKey(e => e.id_encuesta).OnDelete(DeleteBehavior.Cascade);
-                entity.HasOne(e => e.Usuario).WithMany().HasForeignKey(e => e.id_usuario).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
-            });
-
             modelBuilder.Entity<Respuesta>(entity => {
                 entity.HasKey(e => e.id_respuesta);
                 entity.Property(e => e.valor_texto).HasColumnType("varchar(500)").IsRequired(false);
-                entity.HasOne(e => e.RespuestaEncuesta).WithMany().HasForeignKey(e => e.id_respuesta_encuesta).OnDelete(DeleteBehavior.Cascade);
+                entity.Property(e => e.submission_id).HasColumnType("uniqueidentifier");
+                entity.Property(e => e.ip_respondedor).HasColumnType("varchar(45)");
+                entity.Property(e => e.fecha_respuesta).HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
+                entity.HasOne<Usuario>().WithMany().HasForeignKey("id_usuario").IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 entity.HasOne(e => e.Pregunta).WithMany().HasForeignKey(e => e.id_pregunta).OnDelete(DeleteBehavior.Restrict);
                 entity.HasOne(e => e.Opcion).WithMany().HasForeignKey(e => e.id_opcion).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
             });

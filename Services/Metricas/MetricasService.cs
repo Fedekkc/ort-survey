@@ -1,6 +1,7 @@
 #nullable enable
 
 using OrtSurvey.Context;
+using Microsoft.EntityFrameworkCore;
 using OrtSurvey.Dtos.Metricas;
 
 namespace OrtSurvey.Services.Metricas
@@ -23,12 +24,13 @@ namespace OrtSurvey.Services.Metricas
             }
 
             var preguntas = _db.Preguntas.Where(p => p.id_encuesta == idEncuesta).ToList();
-            var respuestasEncuesta = _db.RespuestasEncuestas.Where(r => r.id_encuesta == idEncuesta).ToList();
             var respuestas = ObtenerRespuestas(idEncuesta);
 
-            var usuarios = respuestasEncuesta
+            var usuarios = respuestas
                 .Where(r => r.id_usuario.HasValue)
-                .Join(_db.Usuarios, r => r.id_usuario!.Value, u => u.id_usuario, (_, user) => user)
+                .Select(r => r.id_usuario!.Value)
+                .Distinct()
+                .Join(_db.Usuarios, id => id, u => u.id_usuario, (_, user) => user)
                 .ToList();
 
             return new MetricasResumenDto
@@ -36,10 +38,10 @@ namespace OrtSurvey.Services.Metricas
                 IdEncuesta = encuesta.id_encuesta,
                 TituloEncuesta = encuesta.titulo,
                 TotalPreguntas = preguntas.Count,
-                TotalRespuestasEncuesta = respuestasEncuesta.Count,
+                TotalRespuestasEncuesta = respuestas.Select(r => r.submission_id).Distinct().Count(),
                 TotalVotos = respuestas.Count,
                 TotalUsuariosIdentificados = usuarios.Count,
-                TotalUsuariosAnonimos = respuestasEncuesta.Count - usuarios.Count,
+                TotalUsuariosAnonimos = Math.Max(0, respuestas.Select(r => r.submission_id).Distinct().Count() - usuarios.Count),
                 DistribucionGenero = usuarios
                     .GroupBy(u => string.IsNullOrWhiteSpace(u.genero) ? "NO_INFORMADO" : u.genero.Trim())
                     .Select(g => new MetricasGeneroDto
@@ -61,14 +63,14 @@ namespace OrtSurvey.Services.Metricas
                 return null;
             }
 
-            return _db.RespuestasEncuestas
-                .Where(r => r.id_encuesta == idEncuesta)
-                .AsEnumerable()
+            var respuestas = ObtenerRespuestas(idEncuesta);
+            return respuestas
+                .Where(r => r.submission_id.HasValue)
                 .GroupBy(r => DateOnly.FromDateTime(r.fecha_respuesta.Date))
                 .Select(g => new MetricasTimelineDto
                 {
                     Fecha = g.Key,
-                    TotalRespuestas = g.Count()
+                    TotalRespuestas = g.Select(r => r.submission_id).Distinct().Count()
                 })
                 .OrderBy(x => x.Fecha)
                 .ToList();
@@ -123,7 +125,7 @@ namespace OrtSurvey.Services.Metricas
                 {
                     IdPregunta = pregunta.id_pregunta,
                     TextoPregunta = pregunta.texto,
-                    TipoPregunta = pregunta.tipo_pregunta,
+                    TipoPregunta = string.Empty,
                     TotalRespuestas = totalRespuestas,
                     Opciones = opcionesDto,
                     TotalRespuestasTextoLibre = respuestasPregunta.Count(r => !r.id_opcion.HasValue && !string.IsNullOrWhiteSpace(r.valor_texto))
@@ -135,18 +137,9 @@ namespace OrtSurvey.Services.Metricas
 
         private List<OrtSurvey.Models.Respuesta> ObtenerRespuestas(int idEncuesta)
         {
-            var respuestaEncuestaIds = _db.RespuestasEncuestas
-                .Where(r => r.id_encuesta == idEncuesta)
-                .Select(r => r.id_respuesta_encuesta)
-                .ToList();
-
-            if (respuestaEncuestaIds.Count == 0)
-            {
-                return new List<OrtSurvey.Models.Respuesta>();
-            }
-
             return _db.Respuestas
-                .Where(r => respuestaEncuestaIds.Contains(r.id_respuesta_encuesta))
+                .Include(r => r.Pregunta)
+                .Where(r => r.Pregunta != null && r.Pregunta.id_encuesta == idEncuesta)
                 .ToList();
         }
     }

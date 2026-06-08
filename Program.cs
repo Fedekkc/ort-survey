@@ -19,6 +19,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<MetricasService>();
+builder.Services.AddScoped<OrtSurvey.Services.Services.EncuestaService>();
 builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
 
 builder.Services.AddDbContext<OrtSurveyDataBase>(options =>

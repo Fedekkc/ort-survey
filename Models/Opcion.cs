@@ -16,7 +16,6 @@ namespace OrtSurvey.Models
 		[StringLength(300, MinimumLength = 1, ErrorMessage = "La opcion debe tener entre {2} y {1} caracteres.")]
 		public string texto { get; set; }
 
-		[ForeignKey("Pregunta")]
 		public int id_pregunta { get; set; }
 		public Pregunta Pregunta { get; set; }
 

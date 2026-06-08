@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OrtSurvey.Context;
 using OrtSurvey.Models;
 using OrtSurvey.Services.Auth;
+using OrtSurvey.Services.Metricas;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -17,6 +18,7 @@ builder.Services.AddAuthentication("Cookies")
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<MetricasService>();
 builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
 
 builder.Services.AddDbContext<OrtSurveyDataBase>(options =>

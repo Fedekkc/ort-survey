@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OrtSurvey.Services.Metricas;
 
 namespace OrtSurvey.Controllers;
 
@@ -8,27 +9,46 @@ namespace OrtSurvey.Controllers;
 [Route("metricas")]
 public class MetricasController : ControllerBase
 {
-    [HttpGet("{idEncuesta}")]
-    public IActionResult GetMetricas(string idEncuesta)
+    private readonly MetricasService _service;
+
+    public MetricasController(MetricasService service)
     {
-        return Ok(new { encuestaId = idEncuesta, totalRespuestas = 0, totalVotos = 0 });
+        _service = service;
+    }
+
+    [HttpGet("{idEncuesta}")]
+    public IActionResult GetMetricas(int idEncuesta)
+    {
+        var metricas = _service.GetMetricas(idEncuesta);
+        if (metricas == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(metricas);
     }
 
     [HttpGet("{idEncuesta}/timeline")]
-    public IActionResult GetTimeline(string idEncuesta)
+    public IActionResult GetTimeline(int idEncuesta)
     {
-        return Ok(new[]
+        var timeline = _service.GetTimeline(idEncuesta);
+        if (timeline == null)
         {
-            new { fecha = DateOnly.FromDateTime(DateTime.UtcNow), totalRespuestas = 0 }
-        });
+            return NotFound();
+        }
+
+        return Ok(timeline);
     }
 
     [HttpGet("{idEncuesta}/distribucion")]
-    public IActionResult GetDistribucion(string idEncuesta)
+    public IActionResult GetDistribucion(int idEncuesta)
     {
-        return Ok(new[]
+        var distribucion = _service.GetDistribucion(idEncuesta);
+        if (distribucion == null)
         {
-            new { opcion = "Opcion A", cantidad = 0 }
-        });
+            return NotFound();
+        }
+
+        return Ok(distribucion);
     }
 }

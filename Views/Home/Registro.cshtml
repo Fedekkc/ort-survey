@@ -1,0 +1,38 @@
+﻿razor
+@{
+    ViewData["Title"] = "Registro";
+}
+
+<h1>Crear cuenta</h1>
+
+
+<form id="registerForm">
+    <input id="nombre" placeholder="Nombre"><br>
+    <input id="email" placeholder="Email"><br>
+    <input id="password" type="password" placeholder="Contraseña"><br>
+    <input id="genero" placeholder="Genero"><br>
+    <button type="submit">Registrarse</button>
+</form>
+
+
+<div id="resultado"></div>
+
+@section Scripts {
+    <script>
+        document.getElementById("registerForm").addEventListener("submit", async e => {
+            e.preventDefault();
+            const data = {
+                nombre: nombre.value,
+                email: email.value,
+                password: password.value,
+                genero: genero.value
+            };
+            const r = await fetch("/auth/register", {
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify(data)
+            });
+            resultado.textContent = r.ok ? "Usuario creado" : "Error";
+        });
+    </script>
+}

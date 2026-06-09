@@ -33,9 +33,6 @@ namespace OrtSurvey.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_encuesta"));
 
-                    b.Property<int?>("Usuarioid_usuario")
-                        .HasColumnType("int");
-
                     b.Property<string>("descripcion")
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
@@ -46,7 +43,6 @@ namespace OrtSurvey.Migrations
                         .HasDefaultValue(true);
 
                     b.Property<string>("estado")
-                        .IsRequired()
                         .HasColumnType("varchar(20)");
 
                     b.Property<DateTime?>("fecha_cierre")
@@ -67,8 +63,6 @@ namespace OrtSurvey.Migrations
 
                     b.HasKey("id_encuesta");
 
-                    b.HasIndex("Usuarioid_usuario");
-
                     b.HasIndex("id_usuario");
 
                     b.ToTable("Encuesta");
@@ -82,9 +76,6 @@ namespace OrtSurvey.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_opcion"));
 
-                    b.Property<int?>("Preguntaid_pregunta")
-                        .HasColumnType("int");
-
                     b.Property<int>("id_pregunta")
                         .HasColumnType("int");
 
@@ -94,8 +85,6 @@ namespace OrtSurvey.Migrations
                         .HasColumnType("varchar(300)");
 
                     b.HasKey("id_opcion");
-
-                    b.HasIndex("Preguntaid_pregunta");
 
                     b.HasIndex("id_pregunta");
 
@@ -110,14 +99,6 @@ namespace OrtSurvey.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_pregunta"));
 
-                    b.Property<int?>("Encuestaid_encuesta")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("es_obligatoria")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
                     b.Property<int>("id_encuesta")
                         .HasColumnType("int");
 
@@ -126,13 +107,7 @@ namespace OrtSurvey.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("varchar(300)");
 
-                    b.Property<string>("tipo_pregunta")
-                        .IsRequired()
-                        .HasColumnType("varchar(30)");
-
                     b.HasKey("id_pregunta");
-
-                    b.HasIndex("Encuestaid_encuesta");
 
                     b.HasIndex("id_encuesta");
 
@@ -159,7 +134,6 @@ namespace OrtSurvey.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("tipo_reporte")
-                        .IsRequired()
                         .HasColumnType("varchar(20)");
 
                     b.HasKey("id_reporte");
@@ -177,11 +151,10 @@ namespace OrtSurvey.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_respuesta"));
 
-                    b.Property<int?>("Preguntaid_pregunta")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RespuestaEncuestaid_respuesta_encuesta")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("fecha_respuesta")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<int?>("id_opcion")
                         .HasColumnType("int");
@@ -189,57 +162,27 @@ namespace OrtSurvey.Migrations
                     b.Property<int>("id_pregunta")
                         .HasColumnType("int");
 
-                    b.Property<int>("id_respuesta_encuesta")
+                    b.Property<int?>("id_usuario")
                         .HasColumnType("int");
+
+                    b.Property<string>("ip_respondedor")
+                        .HasColumnType("varchar(45)");
+
+                    b.Property<Guid?>("submission_id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("valor_texto")
                         .HasColumnType("varchar(500)");
 
                     b.HasKey("id_respuesta");
 
-                    b.HasIndex("Preguntaid_pregunta");
-
-                    b.HasIndex("RespuestaEncuestaid_respuesta_encuesta");
-
                     b.HasIndex("id_opcion");
 
                     b.HasIndex("id_pregunta");
 
-                    b.HasIndex("id_respuesta_encuesta");
-
-                    b.ToTable("Respuestas");
-                });
-
-            modelBuilder.Entity("OrtSurvey.Models.RespuestaEncuesta", b =>
-                {
-                    b.Property<int>("id_respuesta_encuesta")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_respuesta_encuesta"));
-
-                    b.Property<DateTime>("fecha_respuesta")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<int>("id_encuesta")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("id_usuario")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ip_respondedor")
-                        .IsRequired()
-                        .HasColumnType("varchar(45)");
-
-                    b.HasKey("id_respuesta_encuesta");
-
-                    b.HasIndex("id_encuesta");
-
                     b.HasIndex("id_usuario");
 
-                    b.ToTable("RespuestasEncuestas");
+                    b.ToTable("Respuestas");
                 });
 
             modelBuilder.Entity("OrtSurvey.Models.Usuario", b =>
@@ -260,7 +203,6 @@ namespace OrtSurvey.Migrations
                         .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("genero")
-                        .IsRequired()
                         .HasColumnType("varchar(20)");
 
                     b.Property<string>("nombre")
@@ -283,12 +225,8 @@ namespace OrtSurvey.Migrations
 
             modelBuilder.Entity("OrtSurvey.Models.Encuesta", b =>
                 {
-                    b.HasOne("OrtSurvey.Models.Usuario", null)
-                        .WithMany("Encuestas")
-                        .HasForeignKey("Usuarioid_usuario");
-
                     b.HasOne("OrtSurvey.Models.Usuario", "Usuario")
-                        .WithMany()
+                        .WithMany("Encuestas")
                         .HasForeignKey("id_usuario")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -298,12 +236,8 @@ namespace OrtSurvey.Migrations
 
             modelBuilder.Entity("OrtSurvey.Models.Opcion", b =>
                 {
-                    b.HasOne("OrtSurvey.Models.Pregunta", null)
-                        .WithMany("Opciones")
-                        .HasForeignKey("Preguntaid_pregunta");
-
                     b.HasOne("OrtSurvey.Models.Pregunta", "Pregunta")
-                        .WithMany()
+                        .WithMany("Opciones")
                         .HasForeignKey("id_pregunta")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -313,12 +247,8 @@ namespace OrtSurvey.Migrations
 
             modelBuilder.Entity("OrtSurvey.Models.Pregunta", b =>
                 {
-                    b.HasOne("OrtSurvey.Models.Encuesta", null)
-                        .WithMany("Preguntas")
-                        .HasForeignKey("Encuestaid_encuesta");
-
                     b.HasOne("OrtSurvey.Models.Encuesta", "Encuesta")
-                        .WithMany()
+                        .WithMany("Preguntas")
                         .HasForeignKey("id_encuesta")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -339,44 +269,15 @@ namespace OrtSurvey.Migrations
 
             modelBuilder.Entity("OrtSurvey.Models.Respuesta", b =>
                 {
-                    b.HasOne("OrtSurvey.Models.Pregunta", null)
-                        .WithMany("Respuestas")
-                        .HasForeignKey("Preguntaid_pregunta");
-
-                    b.HasOne("OrtSurvey.Models.RespuestaEncuesta", null)
-                        .WithMany("Respuestas")
-                        .HasForeignKey("RespuestaEncuestaid_respuesta_encuesta");
-
                     b.HasOne("OrtSurvey.Models.Opcion", "Opcion")
                         .WithMany()
                         .HasForeignKey("id_opcion")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OrtSurvey.Models.Pregunta", "Pregunta")
-                        .WithMany()
+                        .WithMany("Respuestas")
                         .HasForeignKey("id_pregunta")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("OrtSurvey.Models.RespuestaEncuesta", "RespuestaEncuesta")
-                        .WithMany()
-                        .HasForeignKey("id_respuesta_encuesta")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Opcion");
-
-                    b.Navigation("Pregunta");
-
-                    b.Navigation("RespuestaEncuesta");
-                });
-
-            modelBuilder.Entity("OrtSurvey.Models.RespuestaEncuesta", b =>
-                {
-                    b.HasOne("OrtSurvey.Models.Encuesta", "Encuesta")
-                        .WithMany()
-                        .HasForeignKey("id_encuesta")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("OrtSurvey.Models.Usuario", "Usuario")
@@ -384,7 +285,9 @@ namespace OrtSurvey.Migrations
                         .HasForeignKey("id_usuario")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.Navigation("Encuesta");
+                    b.Navigation("Opcion");
+
+                    b.Navigation("Pregunta");
 
                     b.Navigation("Usuario");
                 });
@@ -398,11 +301,6 @@ namespace OrtSurvey.Migrations
                 {
                     b.Navigation("Opciones");
 
-                    b.Navigation("Respuestas");
-                });
-
-            modelBuilder.Entity("OrtSurvey.Models.RespuestaEncuesta", b =>
-                {
                     b.Navigation("Respuestas");
                 });
 

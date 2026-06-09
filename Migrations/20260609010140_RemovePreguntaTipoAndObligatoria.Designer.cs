@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrtSurvey.Context;
 
@@ -11,9 +12,11 @@ using OrtSurvey.Context;
 namespace OrtSurvey.Migrations
 {
     [DbContext(typeof(OrtSurveyDataBase))]
-    partial class OrtSurveyDataBaseModelSnapshot : ModelSnapshot
+    [Migration("20260609010140_RemovePreguntaTipoAndObligatoria")]
+    partial class RemovePreguntaTipoAndObligatoria
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

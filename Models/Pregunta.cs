@@ -19,9 +19,6 @@ namespace OrtSurvey.Models
 		public int id_encuesta { get; set; }
 		public Encuesta Encuesta { get; set; }
 
-		public string tipo_pregunta { get; set; }
-		public bool es_obligatoria { get; set; }
-
 		public List<Opcion> Opciones { get; set; } = new List<Opcion>();
 		public List<Respuesta> Respuestas { get; set; } = new List<Respuesta>();
 	}

@@ -41,19 +41,19 @@ namespace OrtSurvey.Context
                 entity.Property(e => e.fecha_creacion).HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
                 entity.Property(e => e.fecha_cierre).HasColumnType("datetime").IsRequired(false);
                 entity.Property(e => e.estado).HasColumnType("varchar(20)");
-                entity.HasOne(e => e.Usuario).WithMany().HasForeignKey(e => e.id_usuario).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(e => e.Usuario).WithMany(u => u.Encuestas).HasForeignKey(e => e.id_usuario).OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Pregunta>(entity => {
                 entity.HasKey(e => e.id_pregunta);
                 entity.Property(e => e.texto).HasColumnType("varchar(300)").IsRequired();
-                entity.HasOne(e => e.Encuesta).WithMany().HasForeignKey(e => e.id_encuesta).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(e => e.Encuesta).WithMany(e => e.Preguntas).HasForeignKey(e => e.id_encuesta).OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Opcion>(entity => {
                 entity.HasKey(e => e.id_opcion);
                 entity.Property(e => e.texto).HasColumnType("varchar(300)").IsRequired();
-                entity.HasOne(e => e.Pregunta).WithMany().HasForeignKey(e => e.id_pregunta).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(e => e.Pregunta).WithMany(p => p.Opciones).HasForeignKey(e => e.id_pregunta).OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Respuesta>(entity => {
@@ -62,8 +62,8 @@ namespace OrtSurvey.Context
                 entity.Property(e => e.submission_id).HasColumnType("uniqueidentifier");
                 entity.Property(e => e.ip_respondedor).HasColumnType("varchar(45)");
                 entity.Property(e => e.fecha_respuesta).HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
-                entity.HasOne<Usuario>().WithMany().HasForeignKey("id_usuario").IsRequired(false).OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(e => e.Pregunta).WithMany().HasForeignKey(e => e.id_pregunta).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(e => e.Usuario).WithMany().HasForeignKey(e => e.id_usuario).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(e => e.Pregunta).WithMany(p => p.Respuestas).HasForeignKey(e => e.id_pregunta).OnDelete(DeleteBehavior.Restrict);
                 entity.HasOne(e => e.Opcion).WithMany().HasForeignKey(e => e.id_opcion).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
             });
 

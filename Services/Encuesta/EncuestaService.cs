@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using OrtSurvey.Context;
 using OrtSurvey.Models;
 using OrtSurvey.Dtos.Encuesta;
@@ -18,14 +19,23 @@ namespace OrtSurvey.Services.Services
 
         public EncuestaDto? GetById(int id)
         {
-            var e = _db.Encuestas.FirstOrDefault(x => x.id_encuesta == id);
+            var e = _db.Encuestas
+                .AsNoTracking()
+                .Include(x => x.Preguntas)
+                    .ThenInclude(p => p.Opciones)
+                .FirstOrDefault(x => x.id_encuesta == id);
             if (e == null) return null;
             return MapToDto(e);
         }
 
         public List<EncuestaDto> GetPublicas()
         {
-            var list = _db.Encuestas.Where(x => x.es_publica).ToList();
+            var list = _db.Encuestas
+                .AsNoTracking()
+                .Include(x => x.Preguntas)
+                    .ThenInclude(p => p.Opciones)
+                .Where(x => x.es_publica)
+                .ToList();
             return list.Select(MapToDto).ToList();
         }
 
@@ -42,10 +52,29 @@ namespace OrtSurvey.Services.Services
                 fecha_creacion = DateTime.Now
             };
 
+            foreach (var preguntaDto in dto.preguntas)
+            {
+                var pregunta = new OrtSurvey.Models.Pregunta
+                {
+                    texto = preguntaDto.texto
+                };
+
+                foreach (var opcionDto in preguntaDto.opciones ?? Enumerable.Empty<CreateEncuestaOpcionDto>())
+                {
+                    pregunta.Opciones.Add(new OrtSurvey.Models.Opcion { texto = opcionDto.texto });
+                }
+
+                entity.Preguntas.Add(pregunta);
+            }
+
             _db.Encuestas.Add(entity);
             _db.SaveChanges();
 
-            _logger.LogInformation("Encuesta creada id={Id} por usuario={User}", entity.id_encuesta, idUsuario);
+            _logger.LogInformation(
+                "Encuesta creada id={Id} por usuario={User} con {Preguntas} preguntas",
+                entity.id_encuesta,
+                idUsuario,
+                entity.Preguntas.Count);
 
             return MapToDto(entity);
         }
@@ -70,7 +99,7 @@ namespace OrtSurvey.Services.Services
             _db.SaveChanges();
 
             _logger.LogInformation("Encuesta actualizada id={Id} por usuario={User}", id, requesterId);
-            return MapToDto(entity);
+            return GetById(id);
         }
 
         public bool Delete(int id, int requesterId)
@@ -98,7 +127,23 @@ namespace OrtSurvey.Services.Services
             fecha_creacion = e.fecha_creacion,
             fecha_cierre = e.fecha_cierre,
             estado = e.estado,
-            id_usuario = e.id_usuario
+            id_usuario = e.id_usuario,
+            preguntas = e.Preguntas?
+                .OrderBy(p => p.id_pregunta)
+                .Select(p => new EncuestaPreguntaDto
+                {
+                    id_pregunta = p.id_pregunta,
+                    texto = p.texto,
+                    opciones = p.Opciones?
+                        .OrderBy(o => o.id_opcion)
+                        .Select(o => new EncuestaOpcionDto
+                        {
+                            id_opcion = o.id_opcion,
+                            texto = o.texto
+                        })
+                        .ToList() ?? new List<EncuestaOpcionDto>()
+                })
+                .ToList() ?? new List<EncuestaPreguntaDto>()
         };
     }
 }

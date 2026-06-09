@@ -17,9 +17,11 @@ builder.Services.AddAuthentication("Cookies")
     });
 builder.Services.AddAuthorization();
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<MetricasService>();
 builder.Services.AddScoped<OrtSurvey.Services.Services.EncuestaService>();
+builder.Services.AddScoped<OrtSurvey.Services.Qr.QrService>();
 builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
 
 builder.Services.AddDbContext<OrtSurveyDataBase>(options =>

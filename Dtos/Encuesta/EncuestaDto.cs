@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace OrtSurvey.Dtos.Encuesta
 {
@@ -12,5 +13,6 @@ namespace OrtSurvey.Dtos.Encuesta
         public DateTime? fecha_cierre { get; set; }
         public string estado { get; set; }
         public int id_usuario { get; set; }
+        public List<EncuestaPreguntaDto> preguntas { get; set; } = new();
     }
 }

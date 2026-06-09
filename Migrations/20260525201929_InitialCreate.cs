@@ -66,8 +66,6 @@ namespace OrtSurvey.Migrations
                     id_pregunta = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     texto = table.Column<string>(type: "varchar(300)", maxLength: 300, nullable: false),
-                    tipo_pregunta = table.Column<string>(type: "varchar(30)", nullable: false),
-                    es_obligatoria = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     id_encuesta = table.Column<int>(type: "int", nullable: false),
                     Encuestaid_encuesta = table.Column<int>(type: "int", nullable: true)
                 },

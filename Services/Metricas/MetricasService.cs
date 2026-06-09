@@ -125,7 +125,6 @@ namespace OrtSurvey.Services.Metricas
                 {
                     IdPregunta = pregunta.id_pregunta,
                     TextoPregunta = pregunta.texto,
-                    TipoPregunta = string.Empty,
                     TotalRespuestas = totalRespuestas,
                     Opciones = opcionesDto,
                     TotalRespuestasTextoLibre = respuestasPregunta.Count(r => !r.id_opcion.HasValue && !string.IsNullOrWhiteSpace(r.valor_texto))

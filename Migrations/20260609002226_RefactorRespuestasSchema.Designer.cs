@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrtSurvey.Context;
 
@@ -11,9 +12,11 @@ using OrtSurvey.Context;
 namespace OrtSurvey.Migrations
 {
     [DbContext(typeof(OrtSurveyDataBase))]
-    partial class OrtSurveyDataBaseModelSnapshot : ModelSnapshot
+    [Migration("20260609002226_RefactorRespuestasSchema")]
+    partial class RefactorRespuestasSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,6 +99,11 @@ namespace OrtSurvey.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_pregunta"));
 
+                    b.Property<bool>("es_obligatoria")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<int>("id_encuesta")
                         .HasColumnType("int");
 
@@ -103,6 +111,9 @@ namespace OrtSurvey.Migrations
                         .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("varchar(300)");
+
+                    b.Property<string>("tipo_pregunta")
+                        .HasColumnType("varchar(30)");
 
                     b.HasKey("id_pregunta");
 

@@ -20,8 +20,19 @@ public class RespuestaController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> ResponderEncuesta([FromBody] JsonElement request)
     {
-        var result = await _respuestaService.ResponderEncuestaAsync(request);
-        return Ok(result);
+        try
+        {
+            var result = await _respuestaService.ResponderEncuestaAsync(request);
+            return Ok(result);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [Authorize]

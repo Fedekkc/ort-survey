@@ -28,6 +28,8 @@ builder.Services.AddDbContext<OrtSurveyDataBase>(options =>
 
 // servicio de preguntas
 builder.Services.AddScoped<OrtSurvey.Services.Pregunta.IPreguntaService, OrtSurvey.Services.Pregunta.PreguntaService>();
+// servicio de respuestas (registro del tipo concreto para no requerir interfaz)
+builder.Services.AddScoped<OrtSurvey.Services.Respuesta.RespuestaService>();
 
 var app = builder.Build();
 

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using System.Threading.Tasks;
+using OrtSurvey.Services.Respuesta;
 
 namespace OrtSurvey.Controllers;
 
@@ -8,24 +10,27 @@ namespace OrtSurvey.Controllers;
 [Route("respuestas")]
 public class RespuestaController : ControllerBase
 {
-    [HttpPost]
-    public IActionResult ResponderEncuesta([FromBody] JsonElement request)
+    private readonly RespuestaService _respuestaService;
+
+    public RespuestaController(RespuestaService respuestaService)
     {
-        return Ok(new
-        {
-            id = "resp-1",
-            encuestaId = request.TryGetProperty("encuestaId", out var encuestaId) ? encuestaId.GetString() : null,
-            creadaEn = DateTimeOffset.UtcNow
-        });
+        _respuestaService = respuestaService;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ResponderEncuesta([FromBody] JsonElement request)
+    {
+        var result = await _respuestaService.ResponderEncuestaAsync(request);
+        return Ok(result);
     }
 
     [Authorize]
     [HttpGet("encuesta/{id}")]
-    public IActionResult ObtenerRespuestas(string id)
+    public async Task<IActionResult> ObtenerRespuestas(string id)
     {
-        return Ok(new[]
-        {
-            new { id = "resp-1", encuestaId = id, creadaEn = DateTimeOffset.UtcNow }
-        });
+        if (!int.TryParse(id, out var encuestaId)) return BadRequest("Id de encuesta invalido");
+
+        var list = await _respuestaService.ObtenerPorEncuestaAsync(encuestaId);
+        return Ok(list);
     }
 }

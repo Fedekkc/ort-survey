@@ -12,9 +12,7 @@
         {
             <p>Bienvenido, @User.Identity.Name</p>
             <p>Ort Survey <a asp-action="CrearEncuesta">Crear Encuesta  </a>.</p>
-            <form asp-action="Logout" method="post">
-                <button type="submit">Cerrar sesión</button>
-            </form>
+            <button id="botonLogOut">Cerrar sesión</button>
         }
         else
         {
@@ -25,3 +23,13 @@
 
         }
 </div>
+
+
+@section Scripts {
+        <script>
+            botonLogOut.onclick = async () => {
+                const r = await fetch("/auth/logout", { method:"POST" });
+                r.ok ? location.href="/home/index" : alert("Error al cerrar sesión");
+            };
+        </script>
+}

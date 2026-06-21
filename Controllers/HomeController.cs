@@ -40,6 +40,13 @@ namespace OrtSurvey.Controllers
             return View();
         }
 
+        public IActionResult CrearEncuesta()
+        {
+            return View();
+        }
+
+
+
 
     }
 }

@@ -1,0 +1,74 @@
+﻿@{
+    ViewData["Title"] = "Crear Encuesta";
+}
+
+<h1>Nueva Encuesta</h1>
+
+<form id="encuestaForm">
+    <input id="titulo" placeholder="Título"><br>
+    <input id="descripcion" placeholder="Descripción"><br>
+    <label>
+        ES publica? :
+        <input id="es_publica" type="checkbox">
+    </label><br>
+    <input id="estado" placeholder="Estado"><br>
+
+    <h3>Preguntas</h3>
+    <div id="preguntasContainer"></div>
+    <button type="button" id="addPregunta">+ Pregunta</button><br><br>
+
+    <button type="submit">Crear Encuesta</button>
+</form>
+
+<div id="resultado"></div>
+
+@section Scripts {
+    <script>
+        // Agregar preguntas dinámicamente
+        document.getElementById("addPregunta").onclick = () => {
+            const div = document.createElement("div");
+            div.classList.add("pregunta");
+            div.innerHTML = `
+                <input class="preguntaTexto" placeholder="Texto de la pregunta"><br>
+                <div class="opcionesContainer"></div>
+                <button type="button" class="addOpcion">+ Opción</button><br><br>
+            `;
+            div.querySelector(".addOpcion").onclick = () => {
+                const opt = document.createElement("input");
+                opt.classList.add("opcionTexto");
+                opt.placeholder = "Texto de opción";
+                div.querySelector(".opcionesContainer").appendChild(opt);
+            };
+            preguntasContainer.appendChild(div);
+        };
+
+        // Enviar encuesta
+        document.getElementById("encuestaForm").addEventListener("submit", async e => {
+            e.preventDefault();
+            const preguntas = [];
+            document.querySelectorAll(".pregunta").forEach(div => {
+                const texto = div.querySelector(".preguntaTexto").value;
+                const opciones = [...div.querySelectorAll(".opcionTexto")]
+                    .filter(o => o.value.trim() !== "")
+                    .map(o => ({ texto: o.value }));
+                preguntas.push({ texto, opciones });
+            });
+
+            const data = {
+                titulo: titulo.value,
+                descripcion: descripcion.value,
+                es_publica: es_publica.checked,
+                estado: estado.value,
+                preguntas
+            };
+
+            const r = await fetch("/encuestas", {
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify(data)
+            });
+
+            resultado.textContent = r.ok ? "Encuesta creada" : "Error al crear";
+        });
+    </script>
+}

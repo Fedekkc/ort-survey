@@ -2,9 +2,14 @@ function agregarPregunta() {
     const div = document.createElement("div");
     div.classList.add("pregunta");
     div.innerHTML =
-        '<input class="preguntaTexto" placeholder="Texto de la pregunta" minlength="5" required><br>' +
+        '<div class="pregunta-cabecera">' +
+        '<input class="preguntaTexto" placeholder="Texto de la pregunta" minlength="5" required>' +
+        '<button type="button" class="eliminarPregunta">Eliminar</button>' +
+        '</div>' +
         '<div class="opcionesContainer"></div>' +
-        '<button type="button" class="addOpcion">+ Opcion</button><br><br>';
+        '<button type="button" class="addOpcion">+ Opcion</button>';
+
+    div.querySelector(".eliminarPregunta").onclick = () => div.remove();
     div.querySelector(".addOpcion").onclick = () => {
         const opt = document.createElement("input");
         opt.classList.add("opcionTexto");

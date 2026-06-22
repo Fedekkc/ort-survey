@@ -148,6 +148,17 @@ namespace OrtSurvey.Services.Services
                 return false;
             }
 
+            var idsPregunta = _db.Preguntas
+                .Where(p => p.id_encuesta == id)
+                .Select(p => p.id_pregunta)
+                .ToList();
+
+            if (idsPregunta.Count > 0)
+            {
+                var respuestas = _db.Respuestas.Where(r => idsPregunta.Contains(r.id_pregunta));
+                _db.Respuestas.RemoveRange(respuestas);
+            }
+
             _db.Encuestas.Remove(entity);
             _db.SaveChanges();
             _logger.LogInformation("Encuesta eliminada id={Id} por usuario={User}", id, requesterId);

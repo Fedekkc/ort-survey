@@ -161,7 +161,41 @@ button[type="submit"]:hover,
     background-color: #ffffff;
 }
 
-.pregunta input {
+.pregunta-cabecera {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.pregunta-cabecera .preguntaTexto {
+    flex: 1;
+    width: auto;
+    margin-bottom: 0;
+    padding: 0.5rem;
+    border: 1px solid var(--color-borde);
+    border-radius: 4px;
+    font: inherit;
+}
+
+.boton-eliminar,
+.eliminarPregunta {
+    flex-shrink: 0;
+    color: var(--color-error);
+    border-color: var(--color-error);
+    background-color: #ffffff;
+    white-space: nowrap;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.9rem;
+}
+
+.boton-eliminar:hover,
+.eliminarPregunta:hover {
+    background-color: var(--color-error);
+    color: #ffffff;
+}
+
+.pregunta input:not(.preguntaTexto) {
     width: 100%;
     margin-bottom: 0.5rem;
     padding: 0.5rem;
@@ -186,6 +220,10 @@ button[type="submit"]:hover,
 .tarjeta-encuesta a {
     margin-right: 0.75rem;
     font-size: 0.95rem;
+}
+
+.tarjeta-encuesta .boton-eliminar {
+    margin-top: 0.75rem;
 }
 
 #preguntasRespuesta fieldset {

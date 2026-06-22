@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OrtSurvey</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="barra-superior">
+        <span class="marca">Ort-Survey</span>
+        <nav>
+            <a asp-controller="Home" asp-action="Index">Inicio</a>
+            @if (User?.Identity?.IsAuthenticated ?? false)
+            {
+                <a asp-controller="Home" asp-action="MisEncuestas">Mis encuestas</a>
+                <a asp-controller="Home" asp-action="CrearEncuesta">Crear encuesta</a>
+            }
+            else
+            {
+                <a asp-controller="Home" asp-action="Login">Login</a>
+                <a asp-controller="Home" asp-action="Registro">Registro</a>
+            }
+        </nav>
+    </header>
+    <main class="contenedor-pagina">
+        @RenderBody()
+    </main>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

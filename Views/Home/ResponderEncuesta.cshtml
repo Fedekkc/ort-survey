@@ -1,0 +1,21 @@
+@{
+    ViewData["Title"] = "Responder encuesta";
+    var encuestaCodigo = ViewBag.EncuestaCodigo;
+}
+
+<h1>Responder encuesta</h1>
+<h2 id="tituloEncuesta"></h2>
+<p id="errorMsg" class="mensaje-error"></p>
+<p id="resultadoMsg" class="mensaje-ok"></p>
+
+<input type="hidden" id="encuestaCodigo" value="@encuestaCodigo" />
+<input type="hidden" id="encuestaId" value="" />
+
+<form id="respuestaForm" class="formulario oculto">
+    <div id="preguntasRespuesta"></div>
+    <button type="submit">Enviar respuestas</button>
+</form>
+
+@section Scripts {
+    <script src="~/js/responderEncuesta.js"></script>
+}

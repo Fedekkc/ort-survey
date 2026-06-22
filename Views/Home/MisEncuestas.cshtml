@@ -1,0 +1,15 @@
+@{
+    ViewData["Title"] = "Mis encuestas";
+}
+
+<h1>Mis encuestas</h1>
+
+<div id="misEncuestasList" class="texto-suave">Cargando...</div>
+
+<p class="acciones">
+    <a class="boton boton-primario" asp-action="CrearEncuesta">Crear nueva encuesta</a>
+</p>
+
+@section Scripts {
+    <script src="~/js/misEncuestas.js"></script>
+}

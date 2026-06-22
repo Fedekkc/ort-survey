@@ -1,0 +1,290 @@
+:root {
+    --color-texto: #333333;
+    --color-texto-suave: #666666;
+    --color-borde: #dddddd;
+    --color-fondo-suave: #f8f9fa;
+    --color-primario: #0056b3;
+    --color-primario-hover: #004494;
+    --color-error: #b00020;
+    --radio: 8px;
+    --sombra: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: var(--color-texto);
+    margin: 0;
+    background-color: #ffffff;
+    line-height: 1.5;
+}
+
+a {
+    color: var(--color-primario);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.barra-superior {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #eeeeee;
+    background-color: #ffffff;
+}
+
+.barra-superior .marca {
+    font-weight: bold;
+    color: var(--color-texto);
+}
+
+.barra-superior nav a {
+    margin-left: 1rem;
+    font-size: 0.95rem;
+}
+
+.contenedor-pagina {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+h1 {
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+    font-size: 1.75rem;
+    color: #222222;
+}
+
+h2, h3 {
+    color: #222222;
+}
+
+.tarjeta {
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    background-color: var(--color-fondo-suave);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--sombra);
+}
+
+.formulario label {
+    display: block;
+    margin-bottom: 0.75rem;
+    color: var(--color-texto-suave);
+    font-size: 0.9rem;
+}
+
+.formulario input[type="text"],
+.formulario input[type="email"],
+.formulario input[type="password"],
+.formulario input:not([type]),
+.formulario textarea {
+    display: block;
+    width: 100%;
+    margin-top: 0.35rem;
+    margin-bottom: 0.75rem;
+    padding: 0.55rem 0.65rem;
+    border: 1px solid var(--color-borde);
+    border-radius: 4px;
+    font: inherit;
+    background-color: #ffffff;
+}
+
+.formulario input:focus {
+    outline: none;
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.15);
+}
+
+.formulario .fila-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.formulario .fila-checkbox input {
+    width: auto;
+    margin: 0;
+}
+
+button,
+.boton {
+    display: inline-block;
+    padding: 0.55rem 1rem;
+    border: 1px solid var(--color-borde);
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: var(--color-texto);
+    font: inherit;
+    cursor: pointer;
+}
+
+button[type="submit"],
+.boton-primario {
+    background-color: var(--color-primario);
+    border-color: var(--color-primario);
+    color: #ffffff;
+}
+
+button[type="submit"]:hover,
+.boton-primario:hover {
+    background-color: var(--color-primario-hover);
+    border-color: var(--color-primario-hover);
+}
+
+.acciones {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.lista-enlaces a {
+    margin-right: 1rem;
+}
+
+.pregunta {
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    background-color: #ffffff;
+}
+
+.pregunta input {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid var(--color-borde);
+    border-radius: 4px;
+    font: inherit;
+}
+
+.pregunta .addOpcion {
+    margin-top: 0.25rem;
+}
+
+.tarjeta-encuesta {
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    background-color: var(--color-fondo-suave);
+    box-shadow: var(--sombra);
+}
+
+.tarjeta-encuesta a {
+    margin-right: 0.75rem;
+    font-size: 0.95rem;
+}
+
+#preguntasRespuesta fieldset {
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: var(--color-fondo-suave);
+}
+
+#preguntasRespuesta legend {
+    font-weight: bold;
+    padding: 0 0.25rem;
+}
+
+#preguntasRespuesta label {
+    display: block;
+    margin: 0.35rem 0;
+}
+
+.mensaje-error,
+#errorMsg,
+#resultado:not(:empty) {
+    color: var(--color-error);
+    margin-top: 0.75rem;
+}
+
+.mensaje-ok,
+#resultadoMsg:not(:empty) {
+    color: #1b5e20;
+    margin-top: 0.75rem;
+}
+
+.texto-suave {
+    color: var(--color-texto-suave);
+}
+
+.seccion-publicas {
+    margin-top: 2rem;
+}
+
+.seccion-publicas h2 {
+    margin-bottom: 0.25rem;
+    font-size: 1.35rem;
+}
+
+.grid-encuestas-publicas {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.tarjeta-encuesta-grid {
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 160px;
+}
+
+.tarjeta-encuesta-titulo {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+}
+
+.tarjeta-encuesta-desc {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+    flex-grow: 1;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.tarjeta-encuesta-meta {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.85rem;
+}
+
+.tarjeta-encuesta-grid .boton {
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+@media (max-width: 900px) {
+    .grid-encuestas-publicas {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 560px) {
+    .grid-encuestas-publicas {
+        grid-template-columns: 1fr;
+    }
+}
+
+.oculto {
+    display: none;
+}

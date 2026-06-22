@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Métricas de Encuesta - Panel Directivo Corporativo</title>
+    <link rel="stylesheet" href="estilos-metricas.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <nav>
+        <span style="font-weight: bold;">Módulo de Encuestas</span>
+        <button id="botonVolverAlListado" class="boton-navegacion">&larr; Volver al Listado Principal</button>
+    </nav>
+
+    <hr class="separador-corporativo">
+
+    <header>
+        <h1>Métricas de encuesta</h1>
+    </header>
+
+    <section id="seccionTarjetasResumen" class="contenedor-horizontal-tarjetas">
+        <article class="bloque-metrica-individual">
+            <h2 id="cantidadTotalDeRespuestas">0</h2>
+            <p>Respuestas Totales</p>
+        </article>
+
+        <article class="bloque-metrica-individual">
+            <h2 id="cantidadTotalDePreguntas">0</h2>
+            <p>Preguntas Activas</p>
+        </article>
+
+        <article class="bloque-metrica-individual">
+            <h2 id="estadoActualDeLaEncuesta">-</h2>
+            <p>Estado Operativo</p>
+        </article>
+    </section>
+
+    <section id="seccionDistribucionDeRespuestas">
+        <h3 class="titulo-distribucion">DISTRIBUCIÓN DE RESPUESTAS</h3>
+        <ul id="listaDeOpcionesYPorcentajes" class="lista-sin-vinetas">
+        </ul>
+    </section>
+
+    <section id="seccionEvolucionTemporal" class="contenedor-grafico-temporal">
+        <h3 class="titulo-distribucion">EVOLUCIÓN TEMPORAL DE PARTICIPACIÓN</h3>
+        <div class="envoltura-del-grafico">
+            <canvas id="lienzoGraficoEvolucionTemporal"></canvas>
+        </div>
+    </section>
+
+    <script src="logica-metricas.js"></script>
+</body>
+</html>

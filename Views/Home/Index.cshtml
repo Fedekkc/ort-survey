@@ -1,0 +1,61 @@
+﻿@using OrtSurvey.Dtos.Encuesta
+@{
+    ViewData["Title"] = "Inicio";
+    var encuestasPublicas = ViewBag.EncuestasPublicas as List<EncuestaDto> ?? new List<EncuestaDto>();
+}
+
+<h1>Inicio</h1>
+
+<div class="tarjeta">
+    @if (User?.Identity?.IsAuthenticated ?? false)
+    {
+        <p>Bienvenido, <strong>@User.Identity.Name</strong></p>
+        <div class="acciones">
+            <a class="boton boton-primario" asp-action="MisEncuestas">Mis encuestas</a>
+            <a class="boton boton-primario" asp-action="CrearEncuesta">Crear encuesta</a>
+            <button type="button" id="botonLogOut">Cerrar sesión</button>
+        </div>
+    }
+    else
+    {
+        <p class="texto-suave">Debes iniciar sesión para crear encuestas.</p>
+        <div class="acciones">
+            <a class="boton boton-primario" asp-action="Registro">Registro</a>
+            <a class="boton" asp-action="Login">Login</a>
+        </div>
+    }
+</div>
+
+<section class="seccion-publicas">
+    <h2>Encuestas públicas</h2>
+    <p class="texto-suave">Últimas encuestas creadas por la comunidad.</p>
+
+    @if (encuestasPublicas.Count == 0)
+    {
+        <p class="texto-suave">Todavía no hay encuestas públicas.</p>
+    }
+    else
+    {
+        <div class="grid-encuestas-publicas">
+        @foreach (var enc in encuestasPublicas)
+        {
+            <div class="tarjeta-encuesta tarjeta-encuesta-grid">
+                <strong class="tarjeta-encuesta-titulo">@enc.titulo</strong>
+                @if (!string.IsNullOrWhiteSpace(enc.descripcion))
+                {
+                    <p class="texto-suave tarjeta-encuesta-desc">@enc.descripcion</p>
+                }
+                <p class="tarjeta-encuesta-meta texto-suave">
+                    Por @(string.IsNullOrWhiteSpace(enc.creador_nombre) ? "Usuario" : enc.creador_nombre)
+                    · @enc.fecha_creacion.ToString("dd/MM/yyyy")
+                </p>
+                <a class="boton boton-primario" asp-action="ResponderEncuesta" asp-route-id="@enc.codigo_publico">Responder</a>
+            </div>
+        }
+        </div>
+    }
+</section>
+
+@section Scripts {
+    <script src="~/js/index-home.js" asp-append-version="true"></script>
+}

@@ -28,7 +28,7 @@ namespace OrtSurvey.Services.Respuesta
 			_logger = logger;
 		}
 
-		public async Task<RespuestaSummaryDto> ResponderEncuestaAsync(JsonElement request, CancellationToken cancellationToken = default)
+		public async Task<RespuestaSummaryDto> ResponderEncuestaAsync(JsonElement request, string? ipCliente, CancellationToken cancellationToken = default)
 		{
 			if (request.ValueKind == JsonValueKind.Undefined || request.ValueKind == JsonValueKind.Null)
 				throw new ArgumentNullException(nameof(request));
@@ -45,17 +45,26 @@ namespace OrtSurvey.Services.Respuesta
 			var encuestaExiste = await _db.Encuestas.AnyAsync(e => e.id_encuesta == encuestaId, cancellationToken);
 			if (!encuestaExiste) throw new ArgumentException("La encuesta no existe", nameof(request));
 
+			if (!string.IsNullOrWhiteSpace(ipCliente))
+			{
+				var ipYaVoto = await _db.Respuestas
+					.AsNoTracking()
+					.AnyAsync(r =>
+						r.ip_respondedor == ipCliente &&
+						r.Pregunta.id_encuesta == encuestaId,
+						cancellationToken);
+
+				if (ipYaVoto)
+				{
+					throw new InvalidOperationException("Ya respondiste esta encuesta. Solo se permite un voto por IP.");
+				}
+			}
+
 			int? idUsuario = null;
 			if (request.TryGetProperty("id_usuario", out var userProp))
 			{
 				if (userProp.ValueKind == JsonValueKind.Number && userProp.TryGetInt32(out var u)) idUsuario = u;
 				else if (userProp.ValueKind == JsonValueKind.String && int.TryParse(userProp.GetString(), out var up)) idUsuario = up;
-			}
-
-			string? ip = null;
-			if (request.TryGetProperty("ip", out var ipProp) && ipProp.ValueKind == JsonValueKind.String)
-			{
-				ip = ipProp.GetString();
 			}
 
 			if (!request.TryGetProperty("respuestas", out var respuestasProp) || respuestasProp.ValueKind != JsonValueKind.Array)
@@ -73,7 +82,7 @@ namespace OrtSurvey.Services.Respuesta
 				{
 					submission_id = submissionId,
 					id_usuario = idUsuario,
-					ip_respondedor = ip,
+					ip_respondedor = ipCliente,
 					fecha_respuesta = ahora
 				};
 

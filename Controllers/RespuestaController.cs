@@ -22,7 +22,8 @@ public class RespuestaController : ControllerBase
     {
         try
         {
-            var result = await _respuestaService.ResponderEncuestaAsync(request);
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var result = await _respuestaService.ResponderEncuestaAsync(request, ip);
             return Ok(result);
         }
         catch (ArgumentException ex)

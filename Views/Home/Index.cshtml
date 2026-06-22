@@ -1,8 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-<--! FALTA VALIDAR LOGiN y modularizar scrripts-->
-
 <div class="text-center">
 
 
@@ -24,12 +22,6 @@
         }
 </div>
 
-
 @section Scripts {
-        <script>
-            botonLogOut.onclick = async () => {
-                const r = await fetch("/auth/logout", { method:"POST" });
-                r.ok ? location.href="/home/index" : alert("Error al cerrar sesión");
-            };
-        </script>
+        <script src="~/js/index-home.js"></script>
 }

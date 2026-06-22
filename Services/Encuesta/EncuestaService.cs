@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using OrtSurvey.Context;
 using OrtSurvey.Models;
 using OrtSurvey.Dtos.Encuesta;
+using OrtSurvey.Helpers;
 
 namespace OrtSurvey.Services.Services
 {
@@ -28,13 +29,47 @@ namespace OrtSurvey.Services.Services
             return MapToDto(e);
         }
 
-        public List<EncuestaDto> GetPublicas()
+        public EncuestaDto? GetByCodigoPublico(string codigo)
+        {
+            if (string.IsNullOrWhiteSpace(codigo)) return null;
+
+            var entity = _db.Encuestas
+                .Include(x => x.Preguntas)
+                    .ThenInclude(p => p.Opciones)
+                .FirstOrDefault(x => x.codigo_publico == codigo);
+
+            if (entity == null) return null;
+
+            EnsureCodigoPublico(entity);
+            return MapToDto(entity);
+        }
+
+        public List<EncuestaDto> GetPublicas(int limite = 20)
+        {
+            var list = _db.Encuestas
+                .AsNoTracking()
+                .Include(x => x.Usuario)
+                .Where(x => x.es_publica)
+                .OrderByDescending(x => x.fecha_creacion)
+                .Take(limite)
+                .ToList();
+
+            return list.Select(e =>
+            {
+                var dto = MapToDto(e);
+                dto.creador_nombre = e.Usuario?.nombre;
+                return dto;
+            }).ToList();
+        }
+
+        public List<EncuestaDto> GetByUsuario(int idUsuario)
         {
             var list = _db.Encuestas
                 .AsNoTracking()
                 .Include(x => x.Preguntas)
                     .ThenInclude(p => p.Opciones)
-                .Where(x => x.es_publica)
+                .Where(x => x.id_usuario == idUsuario)
+                .OrderByDescending(x => x.fecha_creacion)
                 .ToList();
             return list.Select(MapToDto).ToList();
         }
@@ -47,9 +82,10 @@ namespace OrtSurvey.Services.Services
                 descripcion = dto.descripcion,
                 es_publica = dto.es_publica ?? true,
                 fecha_cierre = dto.fecha_cierre,
-                estado = dto.estado,
+                estado = "activa",
                 id_usuario = idUsuario,
-                fecha_creacion = DateTime.Now
+                fecha_creacion = DateTime.Now,
+                codigo_publico = GenerarCodigoUnico()
             };
 
             foreach (var preguntaDto in dto.preguntas)
@@ -121,6 +157,7 @@ namespace OrtSurvey.Services.Services
         private static EncuestaDto MapToDto(OrtSurvey.Models.Encuesta e) => new EncuestaDto
         {
             id_encuesta = e.id_encuesta,
+            codigo_publico = e.codigo_publico,
             titulo = e.titulo,
             descripcion = e.descripcion,
             es_publica = e.es_publica,
@@ -145,5 +182,25 @@ namespace OrtSurvey.Services.Services
                 })
                 .ToList() ?? new List<EncuestaPreguntaDto>()
         };
+
+        private string GenerarCodigoUnico()
+        {
+            string codigo;
+            do
+            {
+                codigo = EncuestaCodigoHelper.Generar();
+            }
+            while (_db.Encuestas.Any(e => e.codigo_publico == codigo));
+
+            return codigo;
+        }
+
+        private void EnsureCodigoPublico(OrtSurvey.Models.Encuesta entity)
+        {
+            if (!string.IsNullOrWhiteSpace(entity.codigo_publico)) return;
+
+            entity.codigo_publico = GenerarCodigoUnico();
+            _db.SaveChanges();
+        }
     }
 }

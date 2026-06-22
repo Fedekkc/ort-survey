@@ -29,7 +29,15 @@ public class EncuestaController : ControllerBase
         return CreatedAtAction(nameof(ObtenerEncuesta), new { id = created.id_encuesta }, created);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("p/{codigo}")]
+    public IActionResult ObtenerEncuestaPorCodigo(string codigo)
+    {
+        var encuesta = _service.GetByCodigoPublico(codigo);
+        if (encuesta == null) return NotFound();
+        return Ok(encuesta);
+    }
+
+    [HttpGet("{id:int}")]
     public IActionResult ObtenerEncuesta(int id)
     {
         var encuesta = _service.GetById(id);
@@ -69,9 +77,12 @@ public class EncuestaController : ControllerBase
     }
 
     [HttpGet("publicas")]
-    public IActionResult ListarPublicas()
+    public IActionResult ListarPublicas([FromQuery] int limite = 20)
     {
-        var list = _service.GetPublicas();
+        if (limite < 1) limite = 1;
+        if (limite > 50) limite = 50;
+
+        var list = _service.GetPublicas(limite);
         return Ok(list);
     }
 

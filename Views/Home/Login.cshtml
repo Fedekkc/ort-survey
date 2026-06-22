@@ -1,36 +1,41 @@
-﻿@{
-    ViewData["Title"] = "Login";
-}
-
-<h1>Iniciar sesión</h1>
-
-<form id="loginForm">
-
-    <input id="email" placeholder="Email"><br>
-    <input id="password" type="password" placeholder="Contraseña"><br>
-    <button type="submit">Iniciar sesión</button>
-
-    </form>
-
-
-    @section Scripts {
-        <script>
-            document.getElementById("loginForm").addEventListener("submit", async e => {
-                e.preventDefault();
-                const data = {
-                    email: email.value,
-                    password: password.value
-                };
-                const r = await fetch("/auth/login", {
-                    method:"POST",
-                    headers:{"Content-Type":"application/json"},
-                    body:JSON.stringify(data)
-                });
-                if(r.ok) {
-                    window.location.href = "/home/index";
-                } else {
-                    alert("Error al iniciar sesión");
-                }
-            });
-        </script>
-}
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<h1>Login</h1>
+
+<div class="tarjeta">
+    <form id="loginForm" class="formulario">
+        <label>Email
+            <input id="email" type="email" required>
+        </label>
+        <label>Contraseña
+            <input id="password" type="password" required>
+        </label>
+        <button type="submit">Entrar</button>
+    </form>
+    <p id="errorMsg" class="mensaje-error"></p>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const r = await fetch("/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({
+                    email: document.getElementById("email").value,
+                    password: document.getElementById("password").value
+                })
+            });
+            if (r.ok) {
+                window.location.href = "/Home/Index";
+            } else {
+                const err = await r.json().catch(() => ({}));
+                document.getElementById("errorMsg").textContent = err.message || "Error al iniciar sesion";
+            }
+        });
+    </script>
+}

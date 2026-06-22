@@ -17,9 +17,6 @@ namespace OrtSurvey.Dtos.Encuesta
 
         public DateTime? fecha_cierre { get; set; }
 
-        [StringLength(20)]
-        public string estado { get; set; }
-
         [Required(ErrorMessage = "Debe incluir al menos una pregunta.")]
         [MinLength(1, ErrorMessage = "Debe incluir al menos una pregunta.")]
         public List<CreateEncuestaPreguntaDto> preguntas { get; set; } = new();

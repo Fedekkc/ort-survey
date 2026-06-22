@@ -2,26 +2,25 @@
     ViewData["Title"] = "Crear Encuesta";
 }
 
-<h1>Nueva Encuesta</h1>
+<h1>Nueva encuesta</h1>
 
-<form id="encuestaForm">
-    <input id="titulo" placeholder="Titulo"><br>
-    <input id="descripcion" placeholder="Descripcion"><br>
-    <label>
-        ES publica? :
-        <input id="es_publica" type="checkbox">
-    </label><br>
-    <input id="estado" placeholder="Estado"><br>
+<div class="tarjeta">
+    <form id="encuestaForm" class="formulario">
+        <input id="titulo" placeholder="Título"><br>
+        <input id="descripcion" placeholder="Descripción"><br>
+        <label class="fila-checkbox">
+            <input id="es_publica" type="checkbox">
+            Encuesta pública
+        </label>
 
-    <h3>Preguntas</h3>
-    <div id="preguntasContainer"></div>
-    <button type="button" id="addPregunta">+ Pregunta</button><br><br>
+        <h3>Preguntas</h3>
+        <div id="preguntasContainer"></div>
+        <button type="button" id="addPregunta">+ Pregunta</button><br><br>
 
-    <button type="submit">Crear Encuesta</button>
-</form>
-
-<div id="resultado"></div>
-
+        <button type="submit">Crear encuesta</button>
+    </form>
+    <div id="resultado" class="mensaje-error"></div>
+</div>
 
 @section Scripts {
     <script src="~/js/crearEncuesta.js"></script>

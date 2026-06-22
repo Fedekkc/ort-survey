@@ -1,21 +1,19 @@
-﻿razor
-@{
+﻿@{
     ViewData["Title"] = "Registro";
 }
 
 <h1>Crear cuenta</h1>
 
-
-<form id="registerForm">
-    <input id="nombre" placeholder="Nombre"><br>
-    <input id="email" placeholder="Email"><br>
-    <input id="password" type="password" placeholder="Contraseña"><br>
-    <input id="genero" placeholder="Genero"><br>
-    <button type="submit">Registrarse</button>
-</form>
-
-
-<div id="resultado"></div>
+<div class="tarjeta">
+    <form id="registerForm" class="formulario">
+        <input id="nombre" placeholder="Nombre"><br>
+        <input id="email" placeholder="Email"><br>
+        <input id="password" type="password" placeholder="Contraseña"><br>
+        <input id="genero" placeholder="Género"><br>
+        <button type="submit">Registrarse</button>
+    </form>
+    <div id="resultado" class="mensaje-error"></div>
+</div>
 
 @section Scripts {
     <script src="~/js/registro.js"></script>

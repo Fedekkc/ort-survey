@@ -27,6 +27,10 @@ namespace OrtSurvey.Models
         public int id_usuario { get; set; }
         public Usuario Usuario { get; set; }
 
+        [Required]
+        [StringLength(32)]
+        public string codigo_publico { get; set; }
+
         public List<Pregunta> Preguntas { get; set; } = new List<Pregunta>();
     }
 }

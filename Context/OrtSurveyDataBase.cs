@@ -41,6 +41,8 @@ namespace OrtSurvey.Context
                 entity.Property(e => e.fecha_creacion).HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
                 entity.Property(e => e.fecha_cierre).HasColumnType("datetime").IsRequired(false);
                 entity.Property(e => e.estado).HasColumnType("varchar(20)");
+                entity.Property(e => e.codigo_publico).HasColumnType("varchar(32)").IsRequired();
+                entity.HasIndex(e => e.codigo_publico).IsUnique();
                 entity.HasOne(e => e.Usuario).WithMany(u => u.Encuestas).HasForeignKey(e => e.id_usuario).OnDelete(DeleteBehavior.Restrict);
             });
 

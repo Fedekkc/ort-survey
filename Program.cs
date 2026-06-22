@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using OrtSurvey.Context;
 using OrtSurvey.Models;
 using OrtSurvey.Services.Auth;
@@ -11,9 +12,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication("Cookies")
     .AddCookie("Cookies", options =>
     {
-        options.LoginPath = "/auth/login";
+        options.LoginPath = "/Home/Login";
         options.LogoutPath = "/auth/logout";
-        options.AccessDeniedPath = "/auth/login";
+        options.AccessDeniedPath = "/Home/Login";
     });
 builder.Services.AddAuthorization();
 
@@ -32,7 +33,7 @@ builder.Services.AddDbContext<OrtSurveyDataBase>(options =>
 builder.Services.AddScoped<OrtSurvey.Services.Pregunta.IPreguntaService, OrtSurvey.Services.Pregunta.PreguntaService>();
 // servicio de respuestas (registro del tipo concreto para no requerir interfaz)
 builder.Services.AddScoped<OrtSurvey.Services.Respuesta.RespuestaService>();
-// ser
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -45,6 +46,11 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "Frontend")),
+    RequestPath = "/Frontend"
+});
 
 app.UseRouting();
 
@@ -54,5 +60,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllers();
 
 app.Run();

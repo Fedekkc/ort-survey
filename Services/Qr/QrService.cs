@@ -28,7 +28,6 @@ public class QrService
     public async Task<QrEncuestaDto?> GenerarQrEncuestaAsync(int idEncuesta, int requesterId, CancellationToken cancellationToken = default)
     {
         var encuesta = await _db.Encuestas
-            .AsNoTracking()
             .FirstOrDefaultAsync(e => e.id_encuesta == idEncuesta, cancellationToken);
 
         if (encuesta == null)
@@ -41,7 +40,9 @@ public class QrService
             return null;
         }
 
-        var url = ConstruirUrlEncuesta(idEncuesta);
+        await EnsureCodigoPublicoAsync(encuesta, cancellationToken);
+
+        var url = ConstruirUrlEncuesta(encuesta.codigo_publico);
         var pngBytes = GenerarImagenQr(url);
 
         _logger.LogInformation("QR generado para encuesta {EncuestaId}", idEncuesta);
@@ -49,6 +50,7 @@ public class QrService
         return new QrEncuestaDto
         {
             id_encuesta = idEncuesta,
+            codigo_publico = encuesta.codigo_publico,
             url = url,
             qr_base64 = Convert.ToBase64String(pngBytes)
         };
@@ -65,7 +67,7 @@ public class QrService
         return Convert.FromBase64String(resultado.qr_base64);
     }
 
-    public string ConstruirUrlEncuesta(int idEncuesta)
+    public string ConstruirUrlEncuesta(string codigoPublico)
     {
         var baseUrl = _configuration["QrSettings:PublicBaseUrl"];
 
@@ -82,7 +84,22 @@ public class QrService
             }
         }
 
-        return $"{baseUrl.TrimEnd('/')}/encuestas/{idEncuesta}";
+        return $"{baseUrl.TrimEnd('/')}/Home/ResponderEncuesta/{codigoPublico}";
+    }
+
+    private async Task EnsureCodigoPublicoAsync(OrtSurvey.Models.Encuesta encuesta, CancellationToken cancellationToken)
+    {
+        if (!string.IsNullOrWhiteSpace(encuesta.codigo_publico)) return;
+
+        string codigo;
+        do
+        {
+            codigo = Helpers.EncuestaCodigoHelper.Generar();
+        }
+        while (await _db.Encuestas.AnyAsync(e => e.codigo_publico == codigo, cancellationToken));
+
+        encuesta.codigo_publico = codigo;
+        await _db.SaveChangesAsync(cancellationToken);
     }
 
     private static byte[] GenerarImagenQr(string contenido)
